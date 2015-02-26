@@ -7,6 +7,7 @@ import networkx as nx
 from convert_visitor import ConvertVisitor
 from sim_visitor import SimVisitor
 import matplotlib.pyplot as plt
+import os
 
 from yaml import load, dump
 try:
@@ -17,18 +18,29 @@ except ImportError:
 if __name__ == "__main__":
   #Run simulator here
   parser = argparse.ArgumentParser(description='Simulator for the HATS home automation system.')
-  parser.add_argument('config')
+  parser.add_argument('config', help="YAML configuration file")
+  parser.add_argument('--house', help="File specifying the house to load.",
+    default="house.pickle")
   args = parser.parse_args()
 
-  with open(args.config, 'r') as f:
-    config = load(f, Loader=Loader)
+  try:
+    with open(args.config, 'r') as f:
+      config = load(f, Loader=Loader)
+  except:
+    config = {}
 
-  if 'house_file' in config:
-    house = nx.read_gpickle(config['house_file'])
-  elif 'house_graph' in config:
-    base_graph = nx.read_graphml(config['house_graph'])
+  fname, ext = os.path.splitext(args.house)
+
+  if ext == '.pickle':
+    house = nx.read_gpickle(args.house)
+  else:
+    if ext == 'gml':
+      base_graph = nx.read_graphml(args.house)
+    else:
+      raise SystemError(args.house + " is not of a known supported format!")
     convert = ConvertVisitor()
     house = convert.traverse_all(base_graph)
+
 
   if config.get('show_graph', True):
     plt.ion()
