@@ -6,6 +6,7 @@ import argparse
 import networkx as nx
 from convert_visitor import ConvertVisitor
 from sim_visitor import SimVisitor
+import matplotlib.pyplot as plt
 
 from yaml import load, dump
 try:
@@ -29,6 +30,10 @@ if __name__ == "__main__":
     convert = ConvertVisitor()
     house = convert.traverse_all(base_graph)
 
+  if config.get('show_graph', True):
+    plt.ion()
+    nx.draw_networkx(house, with_labels=True)
+    plt.draw()
   sim_update = SimVisitor(config['sim'])
   try:
     # Loop here
