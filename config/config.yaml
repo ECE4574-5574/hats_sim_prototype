@@ -1,0 +1,4 @@
+house_graph: house.gml
+save_house: house.pickle
+sim:
+  time_scale: 1.0
