@@ -2,6 +2,8 @@
 # Author: Jason Ziglar <jpz@vt.edu>
 
 import networkx as nx
+import requests as req
+import json
 
 class Visitor:
   def traverse_start(self, graph):
@@ -15,10 +17,12 @@ class Visitor:
     raise NotImplementedError
   def process_room(self, graph, node):
     """Signature called for each room in the graph.
-
+    
     node -- the identifier of the node currently under consideration
+    self.process_users(node) still needs clarification for implementation
     """
-    raise NotImplementedError
+    self.process_devices(node)
+
   def process_door(self, graph, source, target):
     """Signature called for each edge in graph.
 
@@ -26,6 +30,20 @@ class Visitor:
     target -- ending location of the edge
     """
     raise NotImplementedError
+
+  def process_devices(self, node):
+    """Processes each device in the node and constructs the respective API calls"""
+    for devices in node.getDevices():
+      self.excecute_call(devices)
+
+  def execute_call(self, callObject):
+    url = 'https://<server_IP>/user/home/devices/' + str(callObject)  
+    payload = {'currentState' : state,
+	       'requestedState' : reqState}
+    headers = {'User-Agent' : 'IPHONE_USER',
+	    'Content-Type':'application/json'}
+    r = req.post(url, data=json.dumps(payload), headers=headers)
+    return r;
 
   def traverse_all(self, graph):
     """Traverse over entire graph, processing every node and edge
