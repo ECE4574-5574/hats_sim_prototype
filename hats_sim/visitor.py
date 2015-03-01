@@ -42,7 +42,12 @@ class Visitor:
 	       'requestedState' : reqState}
     headers = {'User-Agent' : 'IPHONE_USER',
 	    'Content-Type':'application/json'}
-    r = req.post(url, data=json.dumps(payload), headers=headers)
+    try:
+        r = req.post(url, data=json.dumps(payload), headers=headers)
+    except Timeout:
+	pass
+    except ConnectionError:
+	pass
     return r;
 
   def traverse_all(self, graph):
