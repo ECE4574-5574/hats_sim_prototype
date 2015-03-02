@@ -23,7 +23,7 @@ class Visitor:
     node -- the identifier of the node currently under consideration
     self.process_users(node) still needs clarification for implementation
     """
-    self.process_devices(node)
+    raise NotImplementedError
 
   def process_door(self, graph, source, target):
     """Signature called for each edge in graph.
