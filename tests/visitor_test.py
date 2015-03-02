@@ -3,7 +3,7 @@
 # Author: Jason Ziglar <jpz@vt.edu>
 import unittest
 import networkx as nx
-from hats_sim import visitor, convert_visitor, room
+from hats_sim import visitor, convert_visitor, room, house
 
 class CountVisitor(visitor.Visitor):
   def traverse_start(self, graph):
@@ -48,17 +48,19 @@ class SimpleVisitorTest(unittest.TestCase):
 
   def test_convert_visitor(self):
     visitor = convert_visitor.ConvertVisitor({})
-    house = visitor.traverse_all(self.graph)
+    t_house = visitor.traverse_all(self.graph)
+
+    self.assertTrue(isinstance(t_house, house.House))
 
     #Validate that every node and edge is now given Python classes
-    for r_id in house.nodes_iter():
+    for r_id in t_house.nodes_iter():
       self.assertTrue(r_id in self.graph.nodes())
-      self.assertTrue('data' in house.node[r_id])
-      self.assertTrue(isinstance(house.node[r_id]['data'], room.Room))
-    for edge in house.edges_iter():
+      self.assertTrue('data' in t_house.node[r_id])
+      self.assertTrue(isinstance(t_house.node[r_id]['data'], room.Room))
+    for edge in t_house.edges_iter():
       self.assertTrue(edge in self.graph.edges())
-      self.assertTrue('data' in house[edge[0]][edge[1]])
-      self.assertTrue(isinstance(house[edge[0]][edge[1]]['data'], room.Door))
+      self.assertTrue('data' in t_house[edge[0]][edge[1]])
+      self.assertTrue(isinstance(t_house[edge[0]][edge[1]]['data'], room.Door))
 
 if __name__ == '__main__':
   unittest.main()
