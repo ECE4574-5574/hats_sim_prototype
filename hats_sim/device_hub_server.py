@@ -43,6 +43,12 @@ class DeviceHubRequestServer(HTTPServer):
 	def add_device (self, device):
 		self.devices[device.deviceID] = device
 
+	def get_device (self, deviceID):
+			if deviceID in self.devices:
+				return self.devices[deviceID]
+			else:
+				return None
+
 def runServer(server):
 	server.serve_forever()
 
