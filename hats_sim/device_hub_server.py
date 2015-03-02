@@ -4,8 +4,19 @@ import threading
 import time
 from simulated_devices import HatsSimDevice, LightSwitch, Thermostat
 
+#Contains classes and functions for simulating a device hub by providing a server that responds to HTTP requests.
+#Basic use pattern: Construct a DeviceHubRequestServer. Pass it to serveInBackground(). The returned thread
+#will run until the server is sent an HTTP QUIT. You should wait until the thread is done before allowing any application
+#using this class to terminate.
+
+#Running this file from the command line will start a server listening on this port (as a demo):
 LISTEN_PORT = 8080
 
+#This implementation of an HTTP server is based on Python's built-in BaseHTTPServer.
+#Each time the server handles a request, it instantiates one of these objects.
+#The object has member fields that contain information about the request it is meant to service, and a pointer
+#to the server object that created it.
+#The do_VERB() function is called for each HTTP verb.
 class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 
 	def do_GET(self):
@@ -30,7 +41,7 @@ class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 		self.end_headers()
 		self.server.shouldStop = True
 		
-
+#An extension of HTTPServer. Has a dictionary of devices keyed to their IDs (which become paths)
 class DeviceHubRequestServer(HTTPServer):
 
 	def __init__ (self, server_address, RequestHandlerClass):
