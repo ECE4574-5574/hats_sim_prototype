@@ -9,12 +9,15 @@ LISTEN_PORT = 8080
 class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 
 	def do_GET(self):
-		if self.path in self.server.devices:
-			self.send_response(200)
-		else:
-			self.send_response(404)
-		self.end_headers()
-		return
+		self.server.devicesLock.acquire()
+		try:
+			if self.path in self.server.devices:
+				self.send_response(200)
+			else:
+				self.send_response(404)
+			self.end_headers()
+		finally:
+			self.server.devicesLock.release()
 	
 	def do_POST(self):
 		self.send_response(200)
@@ -35,19 +38,28 @@ class DeviceHubRequestServer(HTTPServer):
 		self.logger = logging.getLogger('DeviceHubRequestServer')
 		self.shouldStop = False
 		self.devices = {}
+		self.devicesLock = threading.Lock()
 
 	def serve_forever (self):
 		while not self.shouldStop:
 			self.handle_request()
 
 	def add_device (self, device):
-		self.devices[device.deviceID] = device
+		self.devicesLock.acquire()		
+		try:
+			self.devices[device.deviceID] = device
+		finally:
+			self.devicesLock.release()
 
 	def get_device (self, deviceID):
+		self.devicesLock.acquire()
+		try:
 			if deviceID in self.devices:
 				return self.devices[deviceID]
 			else:
 				return None
+		finally:
+			self.devicesLock.release()
 
 def runServer(server):
 	server.serve_forever()
