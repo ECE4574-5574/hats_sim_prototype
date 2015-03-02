@@ -47,7 +47,7 @@ class SimpleVisitorTest(unittest.TestCase):
     self.assertEqual(edges, len(self.graph.edges()))
 
   def test_convert_visitor(self):
-    visitor = convert_visitor.ConvertVisitor()
+    visitor = convert_visitor.ConvertVisitor({})
     house = visitor.traverse_all(self.graph)
 
     #Validate that every node and edge is now given Python classes

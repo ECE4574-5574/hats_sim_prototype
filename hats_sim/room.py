@@ -1,20 +1,22 @@
 #Room object, contains list of users and devices
 class Room:
   """Room object"""
-  def __init__(self):
+  def __init__(self, cfg = {}):
     self.users = []
     self.devices = []
 
   """Setters"""
-  def addUser(self,userID):
+  def add_user(self, id, user):
     self.users.append(userID)
-  def addDevice(self,deviceID):
+  def rm_user(self, userID):
+    self.users.remove(userID)
+  def add_device(self,deviceID):
     self.devices.append(deviceID)
 
   """Getters"""
-  def getUsers(self):
+  def get_user(self):
     return self.users
-  def getDevices(self):
+  def get_devices(self):
     return self.devices
 
   """Visiting Method"""
@@ -26,6 +28,6 @@ class Room:
 
 class Door:
   def __init__(self):
-  pass
+    pass
   def visit(self, graph, time):
-  pass
+    pass
