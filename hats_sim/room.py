@@ -22,11 +22,11 @@ class Room:
     return self.devices
 
   """Visiting Method"""
-  def visit(self, graph, time):
+  def visit(self, graph, node, time):
     for user in self.users:
-      user.vist(graph, time)
+      user.vist(graph, node, time)
     for device in self.devices:
-      device.visit(graph, time)
+      device.visit(graph, node, time)
 
 class Door:
   """Door object, which connects between rooms"""
@@ -36,5 +36,5 @@ class Door:
     return self.lock
   def set_lock(self, status):
     self.lock = status
-  def visit(self, graph, time):
+  def visit(self, graph, source, target, time):
     pass
