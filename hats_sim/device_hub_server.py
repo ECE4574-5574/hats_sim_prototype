@@ -30,13 +30,11 @@ class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 
 class DeviceHubRequestServer(HTTPServer):
 
-	logger = None
-	shouldStop = False
-	devices = {}
-	
 	def __init__ (self, server_address, RequestHandlerClass):
 		HTTPServer.__init__(self, server_address, RequestHandlerClass)
 		self.logger = logging.getLogger('DeviceHubRequestServer')
+		self.shouldStop = False
+		self.devices = {}
 
 	def serve_forever (self):
 		while not self.shouldStop:
@@ -61,9 +59,9 @@ if __name__ == "__main__":
 	server.add_device(atriumlight)
 	server.add_device(kitchenlight)
 	server.logger.setLevel(logging.DEBUG)
-	serveInBackground(server)
+	serverThread = serveInBackground(server)
 	try:
-		while True:
+		while serverThread.isAlive():
 			print 'Serving...'
 			time.sleep(10)
 			print 'Still serving...'
