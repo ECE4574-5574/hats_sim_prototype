@@ -34,7 +34,7 @@ if __name__ == "__main__":
   if ext == '.pickle':
     house = nx.read_gpickle(args.house)
   else:
-    if ext == 'gml':
+    if ext == '.gml':
       base_graph = nx.read_graphml(args.house)
     else:
       raise SystemError(args.house + " is not of a known supported format!")
