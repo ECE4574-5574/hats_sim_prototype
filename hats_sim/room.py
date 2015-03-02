@@ -1,15 +1,34 @@
 #Room object, contains list of users and devices
 class Room:
     """Room object"""
-    def __init__(self):
-        self.users = []
-        self.devices = []
+    def __init__(self,yamlDict):
+        try:
+            self.users = yamlDict["users"]
+        except KeyError:
+            pass
+        try:
+            self.devices = yamlDict["devices"]
+        except KeyError:
+            pass
 
     """Setters"""
-    def addUser(self,userID):
-        self.users.append(userID)
-    def addDevice(self,deviceID):
-        self.devices.append(deviceID)
+    def addUser(self,name,user):
+        self.users[name] = user;
+    def addDevice(self,name,user):
+        self.devices[name] = user
+
+    """Remove"""
+    def removeUser(self,key):
+        try:
+            del self.users[key]
+        except KeyError:
+            pass
+
+    def removeDevice(self, key):
+        try:
+            del self.devices[key]
+        except KeyError:
+            pass
 
     """Getters"""
     def getUsers(self):
