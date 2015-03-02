@@ -7,11 +7,11 @@ class HatsSimDevice:
 
 class LightSwitch(HatsSimDevice):
 	def __init__(self, deviceID):
-		super(deviceID)
+		HatsSimDevice.__init__(self, deviceID)
 		self.on = False
 	
 	def __init__(self, deviceID, initSetting):
-		super(deviceID)
+		HatsSimDevice.__init__(self, deviceID)
 		self.on = initSetting
 
 	def getState(self):
@@ -23,15 +23,15 @@ class LightSwitch(HatsSimDevice):
 
 class Thermostat(HatsSimDevice):
 	def __init__(self, deviceID):
-		super(deviceID)
+	        HatsSimDevice.__init__(self, deviceID)	
 		self.tempF = 65
 
-	def __init__(self, deviceID, tempF)
-		super(deviceID)
+	def __init__(self, deviceID, tempF):
+		HatsSimDevice.__init__(self, deviceID)
 		self.tempF = tempF
 
-	def getTempF(self)
+	def getTempF(self):
 		return self.tempF
 
-	def setTempF(self, tempF)
+	def setTempF(self, tempF):
 		self.tempF = tempF
