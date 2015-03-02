@@ -6,15 +6,17 @@ class Room:
     self.devices = []
 
   """Setters"""
-  def add_user(self, id, user):
-    self.users.append(userID)
-  def rm_user(self, userID):
+  def add_user(self, user_id, user):
+    self.users.append(user_id)
+  def rm_user(self, user_id):
     self.users.remove(userID)
   def add_device(self,deviceID):
     self.devices.append(deviceID)
 
   """Getters"""
-  def get_user(self):
+  def get_user(self, user_id):
+    return self.users[user_id]
+  def get_users(self):
     return self.users
   def get_devices(self):
     return self.devices
@@ -22,12 +24,17 @@ class Room:
   """Visiting Method"""
   def visit(self, graph, time):
     for user in self.users:
-      user.vist(graph,time)
+      user.vist(graph, time)
     for device in self.devices:
-      device.visit(graph,time)
+      device.visit(graph, time)
 
 class Door:
-  def __init__(self):
-    pass
+  """Door object, which connects between rooms"""
+  def __init__(self, status = False):
+    self.lock = status
+  def locked(self):
+    return self.lock
+  def set_lock(self, status):
+    self.lock = status
   def visit(self, graph, time):
     pass
