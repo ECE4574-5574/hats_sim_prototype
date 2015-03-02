@@ -51,6 +51,7 @@ def runServer(server):
 def serveInBackground(server):
 	thread = threading.Thread(target=runServer, args=(server,))
 	thread.start()
+	return thread
 
 if __name__ == "__main__":
 	logging.basicConfig(format='%(asctime)s %(message)s')
