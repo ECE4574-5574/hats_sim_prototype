@@ -31,25 +31,6 @@ class Visitor:
     """
     raise NotImplementedError
 
-  def process_devices(self, node):
-    """Processes each device in the node and constructs the respective API calls"""
-    for devices in node.getDevices():
-      self.excecute_call(devices)
-
-  def execute_call(self, callObject):
-    url = 'https://<server_IP>/user/home/devices/' + str(callObject)  
-    payload = {'currentState' : state,
-	       'requestedState' : reqState}
-    headers = {'User-Agent' : 'IPHONE_USER',
-	    'Content-Type':'application/json'}
-    try:
-        r = req.post(url, data=json.dumps(payload), headers=headers)
-    except Timeout:
-	pass
-    except ConnectionError:
-	pass
-    return r;
-
   def traverse_all(self, graph):
     """Traverse over entire graph, processing every node and edge
 
