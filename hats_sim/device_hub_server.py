@@ -7,8 +7,8 @@ from device import Lights
 
 #Contains classes and functions for simulating a device hub by providing a server that responds to HTTP requests.
 #Basic use pattern: Construct a DeviceHubRequestServer. Pass it to serveInBackground(). The returned thread
-#will run until the server is sent an HTTP QUIT. You should wait until the thread is done before allowing any application
-#using this class to terminate.
+#will run until you set server.shouldStop to true. You should wait until the thread is done (call thread.join())
+#before allowing any application using this class to terminate.
 
 #Running this file from the command line will start a server listening on this port (as a demo):
 LISTEN_PORT = 8080
@@ -38,8 +38,7 @@ class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 		self.server.devicesLock.acquire()
 		length = int(self.headers.getheader('content-length', 0))
 		payload = self.rfile.read(length)
-		self.rfile.close()
-		print payload
+		self.rfile.close()	
 		try:
 			if self.path in self.server.devices:
 				newSettings = json.loads(payload)
@@ -65,6 +64,7 @@ class DeviceHubRequestServer(HTTPServer):
 		self.logger = logging.getLogger('DeviceHubRequestServer')
 		self.shouldStop = False
 		self.devices = {}
+		self.timeout = 1
 		self.devicesLock = threading.Lock()
 
 	def serve_forever (self):
@@ -112,5 +112,8 @@ if __name__ == "__main__":
 			print 'Still serving...'
 			time.sleep(10)
 	except KeyboardInterrupt:
-		pass
+		print 'Attempting to stop server...'
+		server.shouldStop = True
+		serverThread.join(30)
+
 
