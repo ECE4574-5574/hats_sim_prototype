@@ -37,7 +37,8 @@ if __name__ == "__main__":
     house = nx.read_gpickle(config['house'])
   elif ext == '.yaml':
     try:
-      with open(config['house'], 'r') as f:
+      house_file = os.path.join(os.path.dirname(__file__), '..', 'houses', config['house'])
+      with open(house_file, 'r') as f:
         house_cfg = load(f, Loader=Loader)
     except:
       house_cfg = {}
