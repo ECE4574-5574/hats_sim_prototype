@@ -1,0 +1,12 @@
+graph: simple.gml
+users:
+  Tommy:
+    move_speed: 1.0
+    tinker_speed: 1.0
+    location: atrium
+rooms:
+  atrium:
+    devices:
+      light:
+        type: light
+        status: True

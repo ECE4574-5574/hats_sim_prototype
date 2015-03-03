@@ -19,8 +19,7 @@ if __name__ == "__main__":
   #Run simulator here
   parser = argparse.ArgumentParser(description='Simulator for the HATS home automation system.')
   parser.add_argument('config', help="YAML configuration file")
-  parser.add_argument('--house', help="File specifying the house to load.",
-    default="house.pickle")
+  parser.add_argument('--house', help="File specifying the house to load.")
   args = parser.parse_args()
 
   try:
@@ -29,18 +28,28 @@ if __name__ == "__main__":
   except:
     config = {}
 
-  fname, ext = os.path.splitext(args.house)
+  if 'house' in args and args.house is not None:
+    config['house'] = args.house
+  fname, ext = os.path.splitext(config['house'])
 
+  convert = False
   if ext == '.pickle':
-    house = nx.read_gpickle(args.house)
+    house = nx.read_gpickle(config['house'])
+  elif ext == '.yaml':
+    try:
+      with open(config['house'], 'r') as f:
+        house_cfg = load(f, Loader=Loader)
+    except:
+      house_cfg = {}
+    path = os.path.join(os.path.dirname(__file__), '..', 'houses', house_cfg['graph'])
+    base_graph = nx.read_graphml(path)
+    convert = True
   else:
-    if ext == '.gml':
-      base_graph = nx.read_graphml(args.house)
-    else:
-      raise SystemError(args.house + " is not of a known supported format!")
-    convert = ConvertVisitor()
-    house = convert.traverse_all(base_graph)
+    raise SystemError(args.house + " is not of a known supported format!")
 
+  if convert:
+    convert = ConvertVisitor(house_cfg)
+    house = convert.traverse_all(base_graph)
 
   if config.get('show_graph', True):
     plt.ion()

@@ -1,0 +1,19 @@
+#Prerana Rane 3/2/2015
+
+import devices
+import json
+
+class Device(object):
+  def __init__(self):
+    self.id = 0
+  def visit(self, graph, node, time):
+    pass
+
+def create(dev):
+  result = None
+  if dev['type'] in devices.__all__:
+    module_ = __import__('devices.' + dev['type'])
+    d_mod_ = getattr(module_, dev['type'])
+    class_ = getattr(d_mod_, dev['type'].title())
+    result = class_(dev)
+  return result

@@ -1,5 +1,5 @@
-house_graph: ../houses/house.gml
-save_house: house.pickle
+house: ../houses/simple_house.yaml
 show_gui: True
 sim:
   time_scale: 1.0
+  cycle_rate: 10.0

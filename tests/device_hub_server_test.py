@@ -6,14 +6,14 @@ import httplib
 import logging
 import time
 from hats_sim import device_hub_server as dhs
-from hats_sim import device as sd
+import hats_sim.devices.light as sd
 
 class DeviceHubServerTest(unittest.TestCase):
 	def setUp(self):
 		self.server = dhs.DeviceHubRequestServer(('',0), dhs.DeviceHubRequestHandler)
 		self.port = self.server.socket.getsockname()[1]
-		self.atriumlight = sd.Lights({'status':False, 'brightness':1.0})
-		self.kitchenlight = sd.Lights({'status':False, 'brightness':1.0})
+		self.atriumlight = sd.Light({'status':False, 'brightness':1.0})
+		self.kitchenlight = sd.Light({'status':False, 'brightness':1.0})
 		self.server.add_device('/devices/atriumLight', self.atriumlight)
 		self.server.add_device('/devices/kitchenLight', self.kitchenlight)
 		self.server.logger.setLevel(logging.DEBUG)
@@ -36,7 +36,6 @@ class DeviceHubServerTest(unittest.TestCase):
 		conn = httplib.HTTPConnection('localhost', self.port)
 		conn.request('QUIT', '')
 		self.thread.join(30)
-		
 
 if __name__ == '__main__':
 	unittest.main()

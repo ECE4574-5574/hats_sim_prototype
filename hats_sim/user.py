@@ -1,54 +1,42 @@
 #!/usr/env python
 
-class User:
-  def __init__(self, cfg = {}):
-    pass
-    #self.id = something
-    #Set up user configuration here
-  def visit(self, graph, node, time):
-    # Here is the chance for the user to do something.
-    room = graph.node[node]['data']
-    # Get list of devices
-    nearby_devices = room.get_devices()
-    # Attempt to move this user to another room
-    success = graph.move_user(self.id, a, b)
-    # Do stuff here
-    
-    	#checks state of random device within room
-	def stateChecker():
-		# randomly select device from room based on list
-		randdev = random.randint(0,len(get_device()); #from room class
-		
-		currentDev = get_device(randdev);
-		devState = currentDev.status;
-		devTime = currentDev.time;
-		
-		if devState == 'true':
-			#check device time and if users are in room
-			if not getUsers(); #if users list empty in room
-				#check device idle time
-				if devTime > 360: # seconds to 60 minutes
-					currentDev = 'false'
-		elif devState == 'sleep':#if there is a mode for continuous run (stay on)
-			#continue running current settings regardless of user/idle time
-			
-		else:
+import random
+from devices import *
 
-	def moveChecker(); #check if user can move rooms and check statuses
-		finding = true;
-		randuser = random.randint(0,len(graph.node[node]['data']);  # get random room from list of rooms
-		currentRoom = graph.node[randuser]['data']
-		success = true
-		while success:
-			if currentRoom.door == false:
-				success = false;	# ends search
-				print "Found open room."
-			else:
-				print "Room ", currentRoom, " ", randuser, " is locked.  Continuing search..."
-				randuser += 1;
-				if randuser > len(graph.node[node]['data']:
-					jumpRoom = graph.node[0]['data']; # start beginning of rooms when it comes to end of list
-					success = graph.move_user(self.id, currentRoom, jumpRoom);
-				else:
-					success = graph.move_user(self.id, currentRoom, graph.node[randuser]['data']);
-				
+class User:
+  def __init__(self, name, cfg = {}):
+    self.name = name
+    self.move_speed = cfg.get('move_speed', 30.0)
+    self.tinker_speed = cfg.get('tinker_speed', 10.0)
+    self.last_move_time = -1.0
+    self.last_tinker_time = -1.0
+
+  def visit(self, graph, node, time):
+    if self.last_move_time < 0:
+      self.last_move_time = time
+    elif time - self.last_move_time > self.move_speed:
+      self.move_to_random_room(graph, node)
+      self.last_move_time = time
+
+    if self.last_tinker_time < 0:
+      self.last_tinker_time = time
+    elif time - self.last_tinker_time > self.tinker_speed:
+      self.tinker(graph, node)
+      self.last_tinker_time = time
+
+  def move_to_random_room(self, graph, node):
+    next_room = random.choice(graph.neighbors(node))
+    graph.move_user(self.name, node, next_room)
+  def tinker(self, graph, node):
+    room = graph.get_room(node)
+    dev_names = room.device_names()
+    if not room.device_names():
+        return
+    d_name = random.choice(dev_names)
+    device = room.get_device(d_name)
+
+    if type(device) is light.Light:
+        if device.getBrightness() > 0.5:
+            device.turnOff()
+        else:
+            device.turnOn()
