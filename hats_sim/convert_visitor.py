@@ -6,6 +6,7 @@ import networkx as nx
 from visitor import Visitor
 from house import House
 from room import Room, Door
+from user import User
 
 class ConvertVisitor(Visitor):
   """Converts a pure graph to a graph with appropriate Python objects.
@@ -20,6 +21,13 @@ class ConvertVisitor(Visitor):
     self.graph = House()
   def traverse_end(self, raw_graph):
     """Returns the converted graph."""
+    u_cfg = self.cfg.get('users', {})
+    for key, value in u_cfg:
+      user = User(value)
+      try:
+        self.graph.node[u_cfg['location']]['data'].add_user(key, user)
+      except KeyError:
+        print "%s cannot be created in invalid location" % key
     return self.graph
   def process_room(self, raw_graph, node):
     """Adds a room to the graph with the appropriate data."""
