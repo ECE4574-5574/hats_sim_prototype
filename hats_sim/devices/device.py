@@ -2,6 +2,7 @@
 
 import devices
 import json
+import requests as req
 
 class Device(object):
   def __init__(self):
