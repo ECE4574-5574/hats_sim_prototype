@@ -2,6 +2,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 import logging
 import threading
 import time
+import json
 from device import Lights
 
 #Contains classes and functions for simulating a device hub by providing a server that responds to HTTP requests.
@@ -34,10 +35,22 @@ class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 			self.server.devicesLock.release()
 	
 	def do_POST(self):
-		self.send_response(200)
-		self.end_headers()
-		self.server.logger.debug('I\'m pretending to handle a POST...')
-		return
+		self.server.devicesLock.acquire()
+		length = int(self.headers.getheader('content-length', 0))
+		payload = self.rfile.read(length)
+		self.rfile.close()
+		print payload
+		try:
+			if self.path in self.server.devices:
+				newSettings = json.loads(payload)
+				self.server.devices[self.path].update(newSettings)
+				self.send_response(200)
+				self.end_headers()
+			else:
+				self.send_response(404)
+				self.end_headers()
+		finally:
+			self.server.devicesLock.release()
 
 	def do_QUIT(self):
 		self.send_response(200)
