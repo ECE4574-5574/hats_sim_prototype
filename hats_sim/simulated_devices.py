@@ -1,3 +1,5 @@
+import json
+
 class HatsSimDevice:
 	def __init__(self, deviceID):
 		self.deviceID = deviceID
@@ -20,6 +22,9 @@ class LightSwitch(HatsSimDevice):
 	def switch(self, newState):
 		self.on = newState
 
+	def toJson(self):
+		return json.dumps({'device-type': 'lightswitch', 'state': self.on})
+
 
 class Thermostat(HatsSimDevice):
 	def __init__(self, deviceID):
@@ -35,3 +40,6 @@ class Thermostat(HatsSimDevice):
 
 	def setTempF(self, tempF):
 		self.tempF = tempF
+
+	def toJson(self):
+		return json.dumps({'device-type': 'lightswitch', 'tempF': self.tempF})

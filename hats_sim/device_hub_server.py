@@ -24,9 +24,12 @@ class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 		try:
 			if self.path in self.server.devices:
 				self.send_response(200)
+				self.send_header('Content-Type', 'application/json')
+				self.end_headers()
+				self.wfile.write(self.server.devices[self.path].toJson())
 			else:
 				self.send_response(404)
-			self.end_headers()
+				self.end_headers()
 		finally:
 			self.server.devicesLock.release()
 	
