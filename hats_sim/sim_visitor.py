@@ -19,8 +19,13 @@ class SimVisitor(Visitor):
     # print now, self.last_time
     time_step = 1.0 / self.cycle_rate
     self.time =  (time_step * self.time_scale) + self.last_time
+    self.step_end = self.step_start + time_step
   def traverse_end(self, graph):
     """Preps for next time step computation."""
+    now = time.time()
+    diff = self.step_end - now
+    if diff > 0.0:
+      time.sleep(diff)
     self.last_time = self.step_start
   def process_room(self, graph, node):
     """Call visit on the room defined in data."""
