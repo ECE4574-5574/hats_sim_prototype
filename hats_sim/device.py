@@ -12,6 +12,11 @@ class Lights(Device):
     super(Device, self).__init__()
     self.status = config.get('status', True)
     self.brightness = config.get('brightness', 1.0)
+  def update(self, newConfig):
+    if 'status' in newConfig:
+      self.status = newConfig['status']
+    if 'brightness' in newConfig:
+      self.brightness = newConfig['brightness']
   def getBrightness(self):
     return self.brightness
   def getStatus(self):
@@ -30,6 +35,11 @@ class Alarm(Device):
     super(Device, self).__init__()
     self.alarm_status = config.get('alarm_status', True)
     self.smoke_alarm_status = config.get('smoke_alarm_status', True)
+  def update(self, newConfig):
+    if 'alarm_status' in newConfig:
+      self.alarm_status = newConfig['alarm_status']
+    if 'smoke_alarm_status' in newConfig:
+      self.smoke_alarm_status = newConfig['smoke_alarm_status']
   def getStatus(self):
     return self.alarm_status
   def enableAlarm(self):
@@ -55,6 +65,17 @@ class HVAC(Device):
     self.tempDesired = config.get('tempDesired', 80 )
     self.humidityDesired = config.get('humidityDesired', 90 )
     self.isRunning = config.get('isRunning', True)
+  def update(self, newConfig):
+    if 'tempCurrent' in newConfig:
+      self.tempCurrent = newConfig['tempCurrent']
+    if 'humidityCurrent' in newConfig:
+      self.humidityCurrent = newConfig['humidityCurrent']
+    if 'tempDesired' in newConfig:
+      self.tempDesired = newConfig['tempDesired']
+    if 'humidityDesired' in newConfig:
+      self.humidityDesired = newConfig['humidityDesired']
+    if 'isRunning' in newConfig:
+      self.isRunning = newConfig['isRunning']
   def getRunningStatus(self):
     return self.isRunning
   def getTemperature(self):
@@ -85,7 +106,9 @@ class doorLocks(Device):
   def __init__(self, config):
     super(Device, self).__init__()
     self.isLocked = config.get('isLocked', True )
-    
+  def update(self, newConfig):
+    if 'isLocked' in newConfig:
+      self.isLocked = newConfig['isLocked']
   def getLockedStatus(self):
     return self.isLocked
   def toggleDoorLocks(self):
@@ -100,7 +123,13 @@ class Windows(Device):
     self.isLocked = config.get('isLocked', True )
     self.height = config.get('height', 2 )
     self.isOpen = config.get('isOpen', True )
-    
+  def update(self, newConfig):
+    if 'isLocked' in newConfig:
+      self.isLocked = newConfig['isLocked']
+    if 'height' in newConfig:
+      self.height = newConfig['height']
+    if 'isOpen' in newConfig:
+      self.height = newConfig['isOpen']
   def getLockedStatus(self):
     return self.isLocked
   def toggleWindowLocks(self):
