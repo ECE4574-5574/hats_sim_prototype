@@ -10,7 +10,6 @@ class Light(Device):
     super(Device, self).__init__()
     self.status = config.get('status', True)
     self.brightness = config.get('brightness', 1.0)
-    print self.status
   def update(self, newConfig):
     if 'status' in newConfig:
       self.status = newConfig['status']
