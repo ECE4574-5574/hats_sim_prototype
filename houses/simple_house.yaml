@@ -1,6 +1,7 @@
 graph: simple.gml
 users:
   Tommy:
+    type: tinker
     move_speed: 5.0
     tinker_speed: 1.0
     location: atrium

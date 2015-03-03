@@ -6,7 +6,8 @@ import networkx as nx
 from visitor import Visitor
 from house import House
 from room import Room, Door
-from user import User
+import hats_sim.users
+from hats_sim.users import user
 
 class ConvertVisitor(Visitor):
   """Converts a pure graph to a graph with appropriate Python objects.
@@ -23,9 +24,9 @@ class ConvertVisitor(Visitor):
     """Returns the converted graph."""
     u_cfg = self.cfg.get('users', {})
     for key, value in u_cfg.items():
-      user = User(key, value)
+      new_user = user.create(key, value)
       try:
-        self.graph.node[value['location']]['data'].add_user(key, user)
+        self.graph.node[value['location']]['data'].add_user(key, new_user)
       except KeyError:
         print "%s cannot be created in invalid location" % key
     return self.graph

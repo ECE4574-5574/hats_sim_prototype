@@ -1,11 +1,13 @@
 #!/usr/env python
+# Author: Jason Ziglar <jpz@vt.edu>
 
-import random
 from devices import *
+from user import User
+import random
 
-class User:
-  def __init__(self, name, cfg = {}):
-    self.name = name
+class Tinker(User):
+  def __init__(self, name, cfg):
+    super(Tinker, self).__init__(name, cfg)
     self.move_speed = cfg.get('move_speed', 30.0)
     self.tinker_speed = cfg.get('tinker_speed', 10.0)
     self.last_move_time = -1.0
@@ -27,6 +29,7 @@ class User:
   def move_to_random_room(self, graph, node):
     next_room = random.choice(graph.neighbors(node))
     graph.move_user(self.name, node, next_room)
+
   def tinker(self, graph, node):
     room = graph.get_room(node)
     dev_names = room.device_names()
@@ -36,7 +39,7 @@ class User:
     device = room.get_device(d_name)
 
     if type(device) is light.Light:
-        if device.getBrightness() > 0.5:
-            device.turnOff()
-        else:
-            device.turnOn()
+      if device.getBrightness() > 0.5:
+        device.turnOff()
+      else:
+        device.turnOn()
