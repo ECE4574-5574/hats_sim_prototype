@@ -8,6 +8,27 @@ class Device(object):
     self.id = 0
   def visit(self, graph, node, time):
     pass
+  def process_device(self, graph, node, time):
+    """Processes the device in the node and constructs the respective API calls"""
+    self.excecute_call(graph, node, time)
+
+  def execute_call(self, graph, node, time):
+    url = 'https://<server_IP>/user/home/devices/' + str(self.id)  
+    payload = {'currentState' : state,
+         'requestedState' : reqState,
+         'graph' : str(graph),
+         'node' : str(node),
+         'time' : str(time)}
+    headers = {'User-Agent' : '',
+      'Content-Type':'application/json'
+      'Authentication' : 'Token'}
+    try:
+        r = req.post(url, data=json.dumps(payload), headers=headers)
+    except Timeout:
+      pass
+    except ConnectionError:
+      pass
+    return r;
 
 def create(dev):
   result = None
