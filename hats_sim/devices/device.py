@@ -15,6 +15,7 @@ def create(dev):
   if dev['type'] in devices.__all__:
     module_ = __import__('devices.' + dev['type'])
     d_mod_ = getattr(module_, dev['type'])
-    class_ = getattr(d_mod_, dev['type'].title())
+    instance = dev.get('instance', dev['type']).title()
+    class_ = getattr(d_mod_, instance)
     result = class_(dev)
   return result
