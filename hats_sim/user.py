@@ -1,5 +1,8 @@
+#!/usr/env python
+
 class User:
   def __init__(self, cfg = {}):
+    pass
     #self.id = something
     #Set up user configuration here
   def visit(self, graph, node, time):
