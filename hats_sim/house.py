@@ -12,6 +12,10 @@ class House(nx.Graph):
     self.hub = dhs.DeviceHubRequestServer(('',0), dhs.DeviceHubRequestHandler)
     self.thread = dhs.serveInBackground(self.hub)
 
+  def stop(self):
+    self.hub.shouldStop = True
+    self.thread.join(30)
+
   def register_device(self, room, d_name, dev):
     self.hub.add_device("/devices/" + d_name, dev)
 

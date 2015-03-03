@@ -61,5 +61,6 @@ if __name__ == "__main__":
     while True:
       sim_update.traverse_all(house)
   except KeyboardInterrupt:
+    house.stop()
     if 'save_house' in config:
       nx.write_gpickle(house, config['save_house'])
