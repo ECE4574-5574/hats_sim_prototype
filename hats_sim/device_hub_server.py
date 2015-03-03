@@ -33,12 +33,12 @@ class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 				self.end_headers()
 		finally:
 			self.server.devicesLock.release()
-	
+
 	def do_POST(self):
 		self.server.devicesLock.acquire()
 		length = int(self.headers.getheader('content-length', 0))
 		payload = self.rfile.read(length)
-		self.rfile.close()	
+		self.rfile.close()
 		try:
 			if self.path in self.server.devices:
 				newSettings = json.loads(payload)
@@ -55,7 +55,7 @@ class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 		self.send_response(200)
 		self.end_headers()
 		self.server.shouldStop = True
-		
+
 #An extension of HTTPServer. Has a dictionary of devices keyed to their IDs (which become paths)
 class DeviceHubRequestServer(HTTPServer):
 
@@ -66,13 +66,21 @@ class DeviceHubRequestServer(HTTPServer):
 		self.devices = devices
 		self.timeout = 1
 		self.devicesLock = threading.Lock()
+		self.pause_lock = threading.Lock()
 
 	def serve_forever (self):
 		while not self.shouldStop:
+			self.pause_lock.acquire()
 			self.handle_request()
+			self.pause_lock.release()
+
+	def pause(self):
+		self.pause_lock.acquire()
+	def unpause(self):
+		self.pause_lock.release()
 
 	def add_device (self, deviceID, device):
-		self.devicesLock.acquire()		
+		self.devicesLock.acquire()
 		try:
 			self.devices[deviceID] = device
 		finally:

@@ -42,5 +42,9 @@ class House(nx.Graph):
   def connectivity_status(self):
     return self.connectivity_status
 
-  def set_connectivity_status(self, connectivity_status):
-    self.connectivity_status = connectivity_status
+  def set_connectivity_status(self, status):
+    if self.connectivity_status and not status: #Going offline
+        self.hub.pause()
+    elif not self.connectivity_status and status: #Coming online
+        self.hub.unpause()
+    self.connectivity_status = status
