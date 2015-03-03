@@ -2,7 +2,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 import logging
 import threading
 import time
-from simulated_devices import HatsSimDevice, LightSwitch, Thermostat
+from device import Lights
 
 #Contains classes and functions for simulating a device hub by providing a server that responds to HTTP requests.
 #Basic use pattern: Construct a DeviceHubRequestServer. Pass it to serveInBackground(). The returned thread
@@ -58,10 +58,10 @@ class DeviceHubRequestServer(HTTPServer):
 		while not self.shouldStop:
 			self.handle_request()
 
-	def add_device (self, device):
+	def add_device (self, deviceID, device):
 		self.devicesLock.acquire()		
 		try:
-			self.devices[device.deviceID] = device
+			self.devices[deviceID] = device
 		finally:
 			self.devicesLock.release()
 
@@ -86,10 +86,10 @@ def serveInBackground(server):
 if __name__ == "__main__":
 	logging.basicConfig(format='%(asctime)s %(message)s')
 	server=DeviceHubRequestServer(('',LISTEN_PORT), DeviceHubRequestHandler)
-	atriumlight = LightSwitch('/user/home/devices/atrium/lightswitch', False)
-	kitchenlight = LightSwitch('/user/home/devices/kitchen/lightswitch', False)
-	server.add_device(atriumlight)
-	server.add_device(kitchenlight)
+	atriumlight = Lights({'status':False, 'brightness':1.0})
+	kitchenlight = Lights({'status':False, 'brightness':1.0})
+	server.add_device('/devices/atriumLight', atriumlight)
+	server.add_device('/devices/kitchenLight', kitchenlight)
 	server.logger.setLevel(logging.DEBUG)
 	serverThread = serveInBackground(server)
 	try:
