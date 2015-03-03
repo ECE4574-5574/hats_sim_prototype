@@ -23,7 +23,7 @@ class SimVisitor(Visitor):
     self.last_time = self.step_start
   def process_room(self, graph, node):
     """Call visit on the room defined in data."""
-    graph.node[node]['data'].visit(graph, self.time)
+    graph.node[node]['data'].visit(graph, node, self.time)
   def process_door(self, graph, source, target):
     """Call visit on the door defined in data."""
-    graph[source][target]['data'].visit(graph, self.time)
+    graph[source][target]['data'].visit(graph, source, target self.time)
