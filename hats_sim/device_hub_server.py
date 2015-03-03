@@ -3,7 +3,7 @@ import logging
 import threading
 import time
 import json
-from device import Lights
+from device import Lights, Alarm
 
 #Contains classes and functions for simulating a device hub by providing a server that responds to HTTP requests.
 #Basic use pattern: Construct a DeviceHubRequestServer. Pass it to serveInBackground(). The returned thread
@@ -59,11 +59,11 @@ class DeviceHubRequestHandler(BaseHTTPRequestHandler):
 #An extension of HTTPServer. Has a dictionary of devices keyed to their IDs (which become paths)
 class DeviceHubRequestServer(HTTPServer):
 
-	def __init__ (self, server_address, RequestHandlerClass):
+	def __init__ (self, server_address, RequestHandlerClass, devices = {}):
 		HTTPServer.__init__(self, server_address, RequestHandlerClass)
 		self.logger = logging.getLogger('DeviceHubRequestServer')
 		self.shouldStop = False
-		self.devices = {}
+		self.devices = devices
 		self.timeout = 1
 		self.devicesLock = threading.Lock()
 
@@ -98,11 +98,12 @@ def serveInBackground(server):
 
 if __name__ == "__main__":
 	logging.basicConfig(format='%(asctime)s %(message)s')
-	server=DeviceHubRequestServer(('',LISTEN_PORT), DeviceHubRequestHandler)
 	atriumlight = Lights({'status':False, 'brightness':1.0})
 	kitchenlight = Lights({'status':False, 'brightness':1.0})
-	server.add_device('/devices/atriumLight', atriumlight)
-	server.add_device('/devices/kitchenLight', kitchenlight)
+	initDevices = {'/devices/atriumLight':atriumlight, '/devices/kitchenLight':kitchenlight}
+	server=DeviceHubRequestServer(('',LISTEN_PORT), DeviceHubRequestHandler, initDevices)
+	alarm = Alarm({})
+	server.add_device('/devices/alarm', alarm)
 	server.logger.setLevel(logging.DEBUG)
 	serverThread = serveInBackground(server)
 	try:
