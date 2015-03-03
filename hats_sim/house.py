@@ -9,7 +9,7 @@ class House(nx.Graph):
   def __init__(self, cfg):
     super(House, self).__init__()
     self.connectivity_status = cfg.get('connected', True)
-    self.hub = dhs.DeviceHubRequestServer(('',0), dhs.DeviceHubRequestHandler)
+    self.hub = dhs.DeviceHubRequestServer(('',8080), dhs.DeviceHubRequestHandler)
     self.thread = dhs.serveInBackground(self.hub)
 
   def stop(self):
